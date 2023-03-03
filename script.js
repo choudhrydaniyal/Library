@@ -1,4 +1,7 @@
-function Book (title, author, pages, read){
+let myLibrary = [];
+
+
+function Book (title, author, pages, read) {
     this.title = title;
     this.author = author;
     this.pages = pages;
@@ -8,6 +11,38 @@ function Book (title, author, pages, read){
     }
 }
 
-const book1 = new Book ('The Hobbit', 'JRR Tolkien', 294, 'not read yet');
 
-book1.info();
+function addBookToLibrary () {
+    let title = window.prompt('Title');
+    let author = window.prompt('Author');
+    let pages = window.prompt('No Of Pages');
+    let read = window.prompt('Read or Not Read Yet');
+
+    const newBook = new Book(title, author, pages, read);
+    myLibrary.push(newBook);
+
+    let table  = document.getElementById("myTable");
+
+    let row = table.insertRow(-1);
+
+    let c1 = row.insertCell(0);
+    let c2 = row.insertCell(1);
+    let c3 = row.insertCell(2);
+    let c4 = row.insertCell(3);
+
+
+
+    for (let index = 0; index < myLibrary.length; index++) {
+        let row = table.insertRow(-1);
+
+        let c1 = row.insertCell(0);
+        let c2 = row.insertCell(1);
+        let c3 = row.insertCell(2);
+        let c4 = row.insertCell(3);
+
+        c1.innerText = myLibrary[index].title;
+        c2.innerText = myLibrary[index].author;
+        c3.innerText = myLibrary[index].pages;
+        c4.innerText = myLibrary[index].read;
+    }
+}
