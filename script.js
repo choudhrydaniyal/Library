@@ -1,33 +1,31 @@
 let myLibrary = [];
 
-function Book(title, author, pages, read) {
+function Book(title, author, pages, read, id) {
   this.title = title;
   this.author = author;
   this.pages = pages;
   this.read = read;
-  this.info = function () {
-    console.log(
-      this.title +
-        " by " +
-        this.author +
-        ", " +
-        this.pages +
-        " pages" +
-        ", " +
-        this.read +
-        "."
-    );
-  };
+  this.id = id;
 }
+
+Book.prototype.toggleRead = function () {
+  this.read = this.read === "Read" ? "Not Read" : "Read";
+};
 
 function addBookToLibrary(t, a, p, r) {
   let title = t;
   let author = a;
   let pages = p;
-  let read = r;
+  let read = r === "on" ? "Read" : "Not Read";
+  let id = crypto.randomUUID();
 
-  const newBook = new Book(title, author, pages, read);
+  const newBook = new Book(title, author, pages, read, id);
   myLibrary.push(newBook);
+  displayTable();
+}
+
+function deleteBook(id) {
+  myLibrary = myLibrary.filter((book) => book.id !== id);
   displayTable();
 }
 
@@ -41,15 +39,36 @@ function displayTable() {
   for (let index = 0; index < myLibrary.length; index++) {
     let row = table.insertRow(-1);
 
+    row.setAttribute("data-id", myLibrary[index].id);
+
     let c1 = row.insertCell(0);
     let c2 = row.insertCell(1);
     let c3 = row.insertCell(2);
     let c4 = row.insertCell(3);
+    let c5 = row.insertCell(4);
+    let c6 = row.insertCell(5);
 
     c1.innerText = myLibrary[index].title;
     c2.innerText = myLibrary[index].author;
     c3.innerText = myLibrary[index].pages;
     c4.innerText = myLibrary[index].read;
+
+    let deleteBtn = document.createElement("button");
+    deleteBtn.innerText = "Delete";
+    deleteBtn.addEventListener("click", function () {
+      const bookId = row.getAttribute("data-id");
+      deleteBook(bookId);
+    });
+
+    c5.appendChild(deleteBtn);
+
+    let toggleBtn = document.createElement("button");
+    toggleBtn.innerText = "Toggle Read";
+    toggleBtn.addEventListener("click", function () {
+      myLibrary[index].toggleRead();
+      displayTable();
+    });
+    c6.appendChild(toggleBtn);
   }
 }
 
@@ -78,8 +97,9 @@ function createForm() {
   const readLabel = document.createElement("label");
   readLabel.textContent = "Read or Not read:";
   const read = document.createElement("input");
-  read.type = "text";
+  read.type = "checkbox";
   read.name = "read";
+  readLabel.textContent = "Read:";
 
   const submitButton = document.createElement("button");
   submitButton.type = "submit";
